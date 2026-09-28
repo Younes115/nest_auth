@@ -1,12 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class AppService {
-  getHello(): string {
-    return 'Hello World!';
-  }
-
-  readonly users = [{
+export class userService {
+    readonly users = [{
     id: 1,
     name: 'John Doe',
     email: 'john.doe@example.com',},{
