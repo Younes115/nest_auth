@@ -1,47 +1,30 @@
-import { Injectable } from '@nestjs/common';
-
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../entities/user.entitie.js';
+import { CreateUserDto } from '../dtos/create_uset_dtos.js';
 @Injectable()
 export class userService {
-    readonly users = [{
-    id: 1,
-    name: 'John Doe',
-    email: 'john.doe@example.com',},{
-    id: 2,  
-    name: 'Jane Smith',
-    email: 'jane.smith@example.com',}
-  ]
-  getUsers(): any[] {
-    return this.users;
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  async createUser(createUserDto:CreateUserDto): Promise<User> {
+    const existingUser = await this.userRepository.findOne({ where: { email: createUserDto.email } });
+    if (existingUser) {
+      throw new ConflictException('User with this email already exists');
+    }
+
+    const newUser = this.userRepository.create(createUserDto);
+    return this.userRepository.save(newUser);
   }
 
-  getUserById(id: number): any {
-    const user = this.users.find(user => user.id === id);
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
-      throw new Error(`User with id ${id} not found.`);
+      throw new NotFoundException('User not found');
     }
     return user;
-  }
-
-  addUser(user: { id: number; name: string; email: string }): any[] {
-    this.users.push(user);
-    return this.users;
-  }
-
-  updateUser(id: number, updatedUser: { name?: string; email?: string }): any[] {
-    const user = this.getUserById(id);
-    if (user) {
-      user.name = updatedUser.name ?? user.name;
-      user.email = updatedUser.email ?? user.email;
-    }else {
-      throw new Error(`User with id ${id} not found.`);
-    }
-    return this.users;
-  }
-
-  deleteUser(id: number): void {
-    const index = this.users.findIndex(user => user.id === id);
-    if (index !== -1) {
-      this.users.splice(index, 1);
-    }
   }
 }
