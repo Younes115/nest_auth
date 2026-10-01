@@ -2,14 +2,19 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entitie.js';
-import { CreateUserDto } from '../dtos/create_uset_dtos.js';
+import { CreateUserDto } from '../dtos/create_user_dtos.js';
 @Injectable()
-export class userService {
+export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
 
+  /**
+   * Creates a new user
+   * @param createUserDto The data for the new user
+   * @returns The created user
+   */
   async createUser(createUserDto:CreateUserDto): Promise<User> {
     const existingUser = await this.userRepository.findOne({ where: { email: createUserDto.email } });
     if (existingUser) {
@@ -20,6 +25,11 @@ export class userService {
     return this.userRepository.save(newUser);
   }
 
+  /**
+   * finds a user by their email
+   * @param email The email of the user to find
+   * @returns The found user
+   */
   async findByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
@@ -27,4 +37,13 @@ export class userService {
     }
     return user;
   }
+
+  /**
+   * finds all users
+   * @returns The found users
+   */
+  async findAllUsers(): Promise<User[]> {
+    return this.userRepository.find();
+  }
 }
+

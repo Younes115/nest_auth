@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module.js';
 
 
 
@@ -11,7 +12,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV || 'development'}`, '.env'],
     }),
-    UserModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -26,6 +26,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         synchronize: process.env.NODE_ENV !== 'production',
       }),
     }),
+    AuthModule,
+    UserModule,
   ],
 })
 export class AppModule {}
