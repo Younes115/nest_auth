@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength, IsEnum, IsOptional } from "class-validator";
-import { UserRole } from "../entities/user.entitie.js";
+import { UserRole } from "../../utails/userTypes.js";
 
 export class CreateUserDto {
     @IsNotEmpty()

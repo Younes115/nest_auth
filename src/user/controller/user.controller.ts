@@ -3,6 +3,9 @@ import { UserService } from '../service/user.service.js';
 import { AuthGuard } from '../../auth/guards/auth.guard.js';
 import { CurrentUser } from '../decorators/current_user.decorator.js';
 import type{ JWTPayloadType } from '../../utails/types.js';
+import { Roles } from '../decorators/user_role.decorator.js';
+import { UserRole } from '../../utails/userTypes.js';
+import { AuthRolesGuard } from '../../auth/guards/auth_roles.guard.js';
 
 
 @Controller('api/users')
@@ -17,6 +20,8 @@ export class userController {
   }
 
   @Get()
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AuthRolesGuard)
   @HttpCode(HttpStatus.OK)
   async findAllUsers() {
     const users = await this.userService.findAllUsers();
