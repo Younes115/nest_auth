@@ -38,6 +38,15 @@ export class UserService {
     return user;
   }
 
+  public async getCurrentUser(userId: string): Promise<User> {
+    
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
   /**
    * finds all users
    * @returns The found users
@@ -45,5 +54,7 @@ export class UserService {
   async findAllUsers(): Promise<User[]> {
     return this.userRepository.find();
   }
+
+  
 }
 

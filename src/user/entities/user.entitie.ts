@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from "typeorm";
-import { CURRENT_TIMESTAMP, } from "../utails/constaint.js";
+import { CURRENT_TIMESTAMP, } from "../../utails/constaint.js";
 import * as bcrypt from 'bcrypt';
 export enum UserRole {
     ADMIN = 'admin',

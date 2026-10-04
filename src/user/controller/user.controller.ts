@@ -1,5 +1,8 @@
-import { Controller, Get, Post, Param, Delete, Body, Patch, Res, HttpStatus, HttpCode, } from '@nestjs/common';
+import { Controller, Get, Post, Param, Delete, Body, Patch, Res, HttpStatus, HttpCode, Req, UseGuards } from '@nestjs/common';
 import { UserService } from '../service/user.service.js';
+import { AuthGuard } from '../../auth/guards/auth.guard.js';
+import { CurrentUser } from '../decorators/current_user.decorator.js';
+import type{ JWTPayloadType } from '../../utails/types.js';
 
 
 @Controller('api/users')
@@ -18,6 +21,13 @@ export class userController {
   async findAllUsers() {
     const users = await this.userService.findAllUsers();
     return users;
+  }
+
+  @Get("current_user")
+  @UseGuards(AuthGuard)
+  async getCurrentUser(@CurrentUser() payload: JWTPayloadType) {
+    return this.userService.getCurrentUser(payload.id);
+
   }
 
 }
